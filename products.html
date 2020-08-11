@@ -62,7 +62,16 @@
               </div>
               <div class="card-body">
                 <h5 class="card-title">{{item.title}}</h5>
-                <p class="card-text">{{item.content}}</p>
+                <p class="card-text" v-html="item.des">
+                  內容
+                </p>
+                <div class="h5" v-if="!item.price || item.price === item.origin_price">
+                  $ {{ item.origin_price }}元
+                </div>
+                <div v-else>
+                  <del class="h6">原價 ${{ item.origin_price }}元</del>
+                  <div class="h5">現在只要 ${{item.price}}元</div>
+                </div>
               </div>
             </div>
           </div>
