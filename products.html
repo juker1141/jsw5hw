@@ -7,12 +7,14 @@
   <title>Document</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3.3.3/dist/vue-loading.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="css/all.css">
 </head>
 
 <body>
   <div id="app">
+    <loading :active.sync="isLoading"></loading>
     <div class="bg_green h_150 mb-5">
       <div class="d-flex w-100 h-100 justify-content-end align-items-end p-2">
         <button type="button" class="btn btn-primary d-flex" data-toggle="modal" data-target="#exampleModal">
@@ -52,21 +54,29 @@
         <div class="row">
           <div class="col-4 mb-3" v-for="item in products" :key="item.id">
             <div class="card">
-              <img :src="item.imageUrl" class="card-img-top img-fluid" alt="...">
-              <div class="card-img-overlay d-flex justify-content-end align-items-center">
-                <a href="#" class="btn mt-5 mr_-2 d-flex btn-danger px-2 py-1" @click.prevent="addToCart(item)">
+              <img :src="item.imageUrl" class="card-img-top img-fluid productImg" alt="...">
+              <div class="card-img-overlay d-flex justify-content-end align-items-start">
+                <a href="#" class="btn mt_155 mr_-2 d-flex btn-danger px-2 py-1" @click.prevent="addToCart(item.id)">
                   <span class="material-icons">
                     shopping_cart
                   </span>
                 </a>
               </div>
-              <div class="card-body">
-                <h5 class="card-title">{{item.title}}</h5>
-                <p class="card-text" v-html="item.des">
-                  內容
+              <div class="card-body zIndex_100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title m-0">{{ item.title }}</h5>
+                  <button type="button" class="btn p-0 d-flex" @click="getProduct(item.id)"
+                    :disabled="status.loadingItem === item.id">
+                    <span class="material-icons">
+                      info
+                    </span>
+                  </button>
+                </div>
+                <p class="card-text" v-html="item.content">
+                  {{ item.content }}
                 </p>
                 <div class="h5" v-if="!item.price || item.price === item.origin_price">
-                  $ {{ item.origin_price }}元
+                  售價 ${{ item.origin_price }}元
                 </div>
                 <div v-else>
                   <del class="h6">原價 ${{ item.origin_price }}元</del>
@@ -76,7 +86,67 @@
             </div>
           </div>
         </div>
+      </div>
 
+      <!-- 產品詳細內容 -->
+      <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog w_50" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">商品資料</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-8">
+                  <img :src="tempProduct.imageUrl" class="card-img-top" alt="...">
+                </div>
+                <div class="col-4">
+                  <div class="h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <div class="h3 mb-5">{{ tempProduct.title }}</div>
+                      <div class="h5 font-weight-normal mb-5">{{ tempProduct.description }}</div>
+                      <div class="h5" v-if="!tempProduct.price || tempProduct.price === tempProduct.origin_price">
+                        售價 ${{ tempProduct.origin_price }}元
+                      </div>
+                      <div v-else>
+                        <del class="h6">原價 ${{ tempProduct.origin_price }}元</del>
+                        <div class="h5">現在只要 ${{tempProduct.price}}元</div>
+                      </div>
+                    </div>
+                    <div class="d-flex mr-2 w-50" role="group" aria-label="Second group">
+                      <button type="button" @click="tempProduct.num --" class="btn btn-secondary d-flex">
+                        <span class="material-icons">
+                          remove
+                        </span>
+                      </button>
+                      <div>{{ tempProduct.num }}{{ tempProduct.unit }}</div>
+                      <!-- <input class=""> -->
+                      <button type="button" @click="tempProduct.num ++" class="btn btn-secondary d-flex">
+                        <span class="material-icons">
+                          add
+                        </span>
+                      </button>
+                    </div>
+                    <select v-model="tempProduct.num" name class="form-control mt-3">
+                      <option value="0" disabled selected>
+                        請選擇數量
+                      </option>
+                      <option v-for="num in 10" :key="num" :value="num">
+                        選購 {{ num }}
+                      </option>
+                    </select>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -92,6 +162,7 @@
     </script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3.3.3/dist/vue-loading.min.js"></script>
   <script src="js/all.js" type="module"></script>
 </body>
 

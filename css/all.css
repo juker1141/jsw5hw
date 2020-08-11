@@ -7,9 +7,22 @@
 .bg_green {
   background: rgb(199, 240, 199);
 }
+.mt_155 {
+  margin-top: 155px;
+}
 .mr2 {
   margin-right: 8px;
 }
 .w_70 {
   max-width: 70% !important;
+}
+.productImg {
+  height: 220px;
+  width: 100%;
+}
+.zIndex_100 {
+  z-index: 100;
+}
+.w_50 {
+  max-width: 50% !important;
 }
