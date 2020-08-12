@@ -7,16 +7,17 @@ new Vue({
     tempProduct: {
       num: ''
     },
-    api: {
-      uuid: '8a8058c0-58d2-485b-b7fc-3c9be181cca7',
-      path: 'https://course-ec-api.hexschool.io/api/',
-    },
+    carts: [],
     status: {
       loadingItem: '',
     },
     shoppingCartList: [],
     isLoading: false,
     tempProductTotal: '',
+    api: {
+      uuid: '8a8058c0-58d2-485b-b7fc-3c9be181cca7',
+      path: 'https://course-ec-api.hexschool.io/api/',
+    },
   },
   methods: {
     getProducts(page = 1) {
@@ -55,7 +56,6 @@ new Vue({
         product: id,
         quantity,
       };
-
       axios.post(url, cart)
         .then(res => {
           this.isLoading = false;
@@ -64,10 +64,19 @@ new Vue({
           this.isLoading = false;
           console.log(error.response)
         });
-
+    },
+    getCart() {
+      const url = `${this.api.path}${this.api.uuid}/ec/shopping`;
+      axios.get(url)
+        .then(res => {
+          this.carts = res.data.data;
+        }).catch(error => {
+          console.log(error.response)
+        });
     }
   },
   created() {
-    this.getProducts()
+    this.getProducts();
+    this.getCart();
   },
 })

@@ -14,16 +14,18 @@
 
 <body>
   <div id="app">
+    <!-- 讀取效果的插件--START -->
     <loading :active.sync="isLoading"></loading>
+    <!-- 讀取效果的插件--END -->
     <div class="bg_green h_150 mb-5">
       <div class="d-flex w-100 h-100 justify-content-end align-items-end p-2">
-        <button type="button" class="btn btn-primary d-flex" data-toggle="modal" data-target="#exampleModal">
-          <span class="material-icons" :class="{ mr2 : shoppingCartList.length }">
+        <button type="button" class="btn btn-primary d-flex" data-toggle="modal" data-target="#cartModal">
+          <span class="material-icons">
             shopping_cart
           </span>
-          <div v-if="shoppingCartList.length">{{ shoppingCartList.length }}</div>
+          <div class="ml-2" v-if="carts.length">{{ carts.length }}</div>
         </button>
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
           aria-hidden="true">
           <div class="modal-dialog w_70" role="document">
             <div class="modal-content">
@@ -34,11 +36,57 @@
                 </button>
               </div>
               <div class="modal-body">
-                <ul>
-                  <li v-for="item in shoppingCartList">
-                    {{item.title}}
-                  </li>
-                </ul>
+                <table>
+                  <thead>
+                    <th>品名</th>
+                    <th width="150px">
+                      數量
+                    </th>
+                    <th>單位</th>
+                    <th>單價</th>
+                    <th>刪除</th>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in carts" :key="item.product.id + 1">
+                      <td class="align-middle">
+                        {{ item.product.title }}
+                      </td>
+                      <td class="align-middle">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <button class="btn btn-outline-primary" type="button"
+                              @click="quantityUpdata(item.product.id, item.quantity + 1)">
+                              +
+                            </button>
+                          </div>
+                          <input id="inlineFormInputGroupUsername" type="text" class="form-control text-center"
+                            :value="item.quantity" @keyup.enter="quantityUpdata(item.product.id, $event.target.value)">
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="button"
+                              @click="quantityUpdata(item.product.id, item.quantity - 1)"
+                              :disabled="item.quantity === 1">
+                              -
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle">
+                        {{ item.product.unit }}
+                      </td>
+                      <td class="align-middle text-right">
+                        {{ item.product.price }}
+                      </td>
+                      <td class="align-middle">
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                          @click="removeCartItem(item.product.id)">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -101,10 +149,10 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="col-8">
+                <div class="col-7">
                   <img :src="tempProduct.imageUrl" class="card-img-top" alt="...">
                 </div>
-                <div class="col-4">
+                <div class="col-5">
                   <div class="h-100 d-flex flex-column justify-content-between">
                     <div>
                       <div class="h3 mb-5">{{ tempProduct.title }}</div>
@@ -117,18 +165,22 @@
                         <div class="h5">現在只要 ${{tempProduct.price}}元</div>
                       </div>
                     </div>
-                    <div class="h5 d-flex justify-content-end">共 {{tempProduct.num}} {{tempProduct.unit}}，{{ tempProduct.price * tempProduct.num }} 元</div>
+                    <div class="h5 d-flex justify-content-end">共 {{tempProduct.num}}
+                      {{tempProduct.unit}}，{{ tempProduct.price * tempProduct.num }} 元</div>
                     <div class="row">
                       <div class="col-6 d-flex align-items-end">
                         <div class="btn-group" role="group" aria-label="Second group">
-                          <button type="button" @click="tempProduct.num --" class="btn btn-secondary px-2 d-flex justify-content-center">
+                          <button type="button" @click="tempProduct.num --"
+                            class="btn btn-secondary px-2 d-flex justify-content-center">
                             <span class="material-icons">
                               remove
                             </span>
                           </button>
-                          <div class="btn btn-secondary py-0 px-3 d-flex align-items-center justify-content-center">{{ tempProduct.num }}</div>
+                          <div class="btn btn-secondary py-0 px-3 d-flex align-items-center justify-content-center">
+                            {{ tempProduct.num }}</div>
                           <!-- <input class=""> -->
-                          <button type="button" @click="tempProduct.num ++" class="btn btn-secondary px-2 d-flex justify-content-center">
+                          <button type="button" @click="tempProduct.num ++"
+                            class="btn btn-secondary px-2 d-flex justify-content-center">
                             <span class="material-icons">
                               add
                             </span>
@@ -136,14 +188,15 @@
                         </div>
                       </div>
                       <div class="col-4 offset-2">
-                        <a href="#" class="btn d-flex justify-content-center align-items-center btn-danger p-0 px-2" @click.prevent="addToCart(tempProduct.id)">
+                        <a href="#" class="btn d-flex justify-content-center align-items-center btn-danger p-0 px-2"
+                          @click.prevent="addToCart(tempProduct.id, tempProduct.num)">
                           <span class="material-icons px-2 py-3">
                             shopping_cart
                           </span>
                         </a>
                       </div>
                     </div>
-                    
+
                   </div>
 
 
