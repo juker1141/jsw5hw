@@ -16,6 +16,7 @@ new Vue({
     },
     shoppingCartList: [],
     isLoading: false,
+    tempProductTotal: '',
   },
   methods: {
     getProducts(page = 1) {
