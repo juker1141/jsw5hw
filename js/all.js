@@ -1,4 +1,12 @@
 Vue.component('loading', VueLoading);
+Vue.filter('toCurrency', function (num) {
+  //避免有原價與特價造成的錯誤
+  if (!num) return;
+  var parts = num.toString().split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.join('.');
+})
+
 
 new Vue({
   el: '#app',
@@ -8,9 +16,10 @@ new Vue({
       num: ''
     },
     carts: [],
-    cartsTotal:0,
+    cartsTotal: 0,
     status: {
       loadingItem: '',
+      loadingcart: '',
     },
     isLoading: false,
     tempProductTotal: '',
@@ -58,8 +67,9 @@ new Vue({
       };
       axios.post(url, cart)
         .then(res => {
+          this.getCart();
           this.isLoading = false;
-          console.log(res)
+          console.log(res);
         }).catch(error => {
           this.isLoading = false;
           console.log(error.response)
@@ -75,23 +85,47 @@ new Vue({
           console.log(error.response)
         });
     },
-    updateCartQuantity(id, quantity){
+    updateCartQuantity(id, quantity) {
+      this.status.loadingcart = id;
       const url = `${this.api.path}${this.api.uuid}/ec/shopping`;
       const cart = {
         product: id,
         quantity,
       };
       axios.patch(url, cart)
-        .then(res=>{
-          console.log(res)
-        })
+        .then(() => {
+          this.getCart();
+          this.status.loadingcart = '';
+        }).catch(() => {
+          this.status.loadingcart = '';
+        });
     },
-    updateCartTotal(){
-      
-      this.carts.forEach((item) =>{
+    updateCartTotal() {
+      this.cartsTotal = 0;
+      this.carts.forEach((item) => {
         this.cartsTotal += item.product.price * item.quantity;
       })
-      
+    },
+    removeCartItem(id) {
+      this.status.loadingcart = id;
+      const url = `${this.api.path}${this.api.uuid}/ec/shopping/${id}`;
+      axios.delete(url)
+        .then(res => {
+          this.status.loadingcart = '';
+          this.getCart();
+        }).catch(() => {
+          this.status.loadingcart = '';
+        })
+    },
+    removeCartAllItem() {
+      const url = `${this.api.path}${this.api.uuid}/ec/shopping/all/product`
+      axios.delete(url)
+        .then(res => {
+          this.getCart();
+          $('#delCartAllModal').modal('hide');
+        }).catch(() => {
+          $('#delCartAllModal').modal('hide');
+        })
     }
   },
   created() {

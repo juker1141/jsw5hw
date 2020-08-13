@@ -19,86 +19,135 @@
     <!-- 讀取效果的插件--END -->
     <div class="bg_green h_150 mb-5">
       <div class="d-flex w-100 h-100 justify-content-end align-items-end p-2">
-        <button type="button" class="btn btn-primary d-flex" data-toggle="modal" data-target="#cartModal">
-          <span class="material-icons">
-            shopping_cart
-          </span>
-          <div class="ml-2" v-if="carts.length">{{ carts.length }}</div>
-        </button>
-        <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog w_70" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">購物車</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="d-flex justify-content-center">
-                  <table class="w-75">
-                    <thead>
-                      <th class="text-center pb-3">品名</th>
-                      <th class="text-center pb-3" width="150px">
-                        數量
-                      </th>
-                      <th class="text-center pb-3" width="80px">單位</th>
-                      <th class="text-center pb-3">單價</th>
-                      <th class="text-center pb-3" width="40px">刪除</th>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in carts" :key="item.product.id + 1">
-                        <td class="align-middle text-center">
-                          {{ item.product.title }}
-                        </td>
-                        <td class="align-middle">
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <button type="button" class="btn btn-outline-primary px-2 d-flex justify-content-center" :disabled="item.quantity === 1">
-                                <span class="material-icons">
-                                  remove
-                                </span>
-                              </button>
-                            </div>
-                            <input id="inlineFormInputGroupUsername" type="text" class="form-control text-center"
-                              :value="item.quantity" @keyup.enter="quantityUpdata(item.product.id, $event.target.value)">
-                            <div class="input-group-append">
-                              <button type="button" class="btn btn-outline-primary px-2 d-flex justify-content-center">
-                                <span class="material-icons">
-                                  add
-                                </span>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="align-middle text-center">
-                          {{ item.product.unit }}
-                        </td>
-                        <td class="align-middle text-center">
-                          {{ item.product.price }}
-                        </td>
-                        <td class="align-middle text-right">
-                          <button type="button" class="btn btn-outline-danger btn-sm"
-                            @click="removeCartItem(item.product.id)">
-                            <span class="material-icons">
-                              delete_outline
-                              </span>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div>{{ cartsTotal }}</div>
-                </div>
-                
 
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+    <button type="button" class="btn btn-success d-flex position-fixed btnCartPosition" data-toggle="modal"
+      data-target="#cartModal">
+      <span class="material-icons">
+        shopping_cart
+      </span>
+      <div class="ml-2" v-if="carts.length">{{ carts.length }}</div>
+    </button>
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog w_70" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">購物車</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex justify-content-center">
+              <table class="w-50">
+                <thead>
+                  <th class="text-center pb-3" width="200px">品名</th>
+                  <th class="text-center pb-3" width="150px">數量</th>
+                  <th class="text-center pb-3" width="80px">單位</th>
+                  <th class="text-center pb-3" width="150px">單價</th>
+                  <th class="text-center pb-3" width="40px">刪除</th>
+                </thead>
+                <tbody>
+                  <tr v-for="item in carts" :key="item.product.id + 1">
+                    <td class="align-middle text-center">
+                      {{ item.product.title }}
+                    </td>
+                    <td class="align-middle">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <button type="button"
+                            @click="item.quantity --; updateCartQuantity(item.product.id, item.quantity)"
+                            class="btn btn-outline-primary px-2 d-flex justify-content-center"
+                            :disabled="item.quantity === 1">
+                            <span class="material-icons">
+                              remove
+                            </span>
+                          </button>
+                        </div>
+                        <input id="inlineFormInputGroupUsername" type="text" class="form-control text-center"
+                          :value="item.quantity" min="1"
+                          @keyup.enter="updateCartQuantity(item.product.id, $event.target.value)">
+                        <div class="input-group-append">
+                          <button type="button"
+                            @click="item.quantity ++; updateCartQuantity(item.product.id, item.quantity)"
+                            class="btn btn-outline-primary px-2 d-flex justify-content-center">
+                            <span class="material-icons">
+                              add
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="align-middle text-center">
+                      {{ item.product.unit }}
+                    </td>
+                    <td class="align-middle text-center">
+                      {{ item.product.price | toCurrency }}
+                    </td>
+                    <td class="align-middle text-center">
+                      <div class="d-flex">
+                        <button type="button" class="btn btn-outline-danger btn-sm d-flex"
+                          @click="removeCartItem(item.product.id)" :disabled="status.loadingcart === item.product.id">
+                          <span class="material-icons">
+                            delete_outline
+                          </span>
+                        </button>
+                        <div class="spinner-border text-primary ml-2" role="status"
+                          v-if="status.loadingcart === item.product.id">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      </div>
+
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <div class="w-75 h5 d-flex justify-content-end align-items-center">
+                訂單總金額為 $ {{ cartsTotal | toCurrency }}
               </div>
             </div>
+            <div class="d-flex justify-content-center">
+              <div class="w-75 h5 d-flex justify-content-end align-items-center">
+                <button class="btn btn-danger d-flex align-items-center" type="button" data-toggle="modal"
+                  data-target="#delCartAllModal">
+                  <span class="material-icons mr-2">
+                    remove_shopping_cart
+                  </span>
+                  清除購物車所有內容
+                </button>
+              </div>
+            </div>
+            <div class="modal fade" id="delCartAllModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header bg-danger">
+                    <h5 class="modal-title text-white" id="exampleModalLabel">清除確認</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span class="text-white" aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    確認要清除所有購物車內容嗎? ( 刪除後不可復原!! )
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" @click="removeCartAllItem">確認刪除</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            <button type="button" class="btn btn-primary">結帳</button>
           </div>
         </div>
       </div>
@@ -130,11 +179,11 @@
                   {{ item.content }}
                 </p>
                 <div class="h5" v-if="!item.price || item.price === item.origin_price">
-                  售價 ${{ item.origin_price }}元
+                  售價 ${{ item.origin_price | toCurrency }}元
                 </div>
                 <div v-else>
-                  <del class="h6">原價 ${{ item.origin_price }}元</del>
-                  <div class="h5">現在只要 ${{item.price}}元</div>
+                  <del class="h6">原價 ${{ item.origin_price | toCurrency }}元</del>
+                  <div class="h5">現在只要 ${{ item.price | toCurrency }}元</div>
                 </div>
               </div>
             </div>
@@ -164,15 +213,15 @@
                       <div class="h3 mb-5">{{ tempProduct.title }}</div>
                       <div class="h5 font-weight-normal mb-3">{{ tempProduct.description }}</div>
                       <div class="h5" v-if="!tempProduct.price || tempProduct.price === tempProduct.origin_price">
-                        售價 ${{ tempProduct.origin_price }}元
+                        售價 ${{ tempProduct.origin_price | toCurrency }}元
                       </div>
                       <div v-else>
-                        <del class="h6">原價 ${{ tempProduct.origin_price }}元</del>
-                        <div class="h5">現在只要 ${{tempProduct.price}}元</div>
+                        <del class="h6">原價 ${{ tempProduct.origin_price | toCurrency }}元</del>
+                        <div class="h5">現在只要 ${{tempProduct.price | toCurrency }}元</div>
                       </div>
                     </div>
                     <div class="h5 d-flex justify-content-end">共 {{tempProduct.num}}
-                      {{tempProduct.unit}}，{{ tempProduct.price * tempProduct.num }} 元</div>
+                      {{tempProduct.unit}}，{{ tempProduct.price * tempProduct.num | toCurrency }} 元</div>
                     <div class="row">
                       <div class="col-6 d-flex align-items-end">
                         <div class="btn-group" role="group" aria-label="Second group">

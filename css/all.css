@@ -23,10 +23,14 @@
 .zIndex_100 {
   z-index: 100;
 }
-.w_40{
+.w_40 {
   width: 40%;
 }
-.btn_big{
+.btn_big {
   height: 48px;
   width: 48px;
+}
+.btnCartPosition {
+  right: 10px;
+  bottom: 100px;
 }
