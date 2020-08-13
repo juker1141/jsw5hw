@@ -8,10 +8,10 @@ new Vue({
       num: ''
     },
     carts: [],
+    cartsTotal:0,
     status: {
       loadingItem: '',
     },
-    shoppingCartList: [],
     isLoading: false,
     tempProductTotal: '',
     api: {
@@ -70,9 +70,25 @@ new Vue({
       axios.get(url)
         .then(res => {
           this.carts = res.data.data;
+          this.updateCartTotal()
         }).catch(error => {
           console.log(error.response)
         });
+    },
+    updateCart(){
+      const url = `${this.api.path}${this.api.uuid}/ec/shopping`;
+      axios.patch(url)
+        .then(res=>{
+          console.log(res)
+        })
+    },
+    updateCartTotal(){
+      
+      this.carts.forEach((item) =>{
+        this.cartsTotal += item.product.price * item.quantity;
+        console.log(this.cartsTotal)
+      })
+      
     }
   },
   created() {

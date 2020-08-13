@@ -36,56 +36,62 @@
                 </button>
               </div>
               <div class="modal-body">
-                <table>
-                  <thead>
-                    <th>品名</th>
-                    <th width="150px">
-                      數量
-                    </th>
-                    <th>單位</th>
-                    <th>單價</th>
-                    <th>刪除</th>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in carts" :key="item.product.id + 1">
-                      <td class="align-middle">
-                        {{ item.product.title }}
-                      </td>
-                      <td class="align-middle">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <button class="btn btn-outline-primary" type="button"
-                              @click="quantityUpdata(item.product.id, item.quantity + 1)">
-                              +
-                            </button>
+                <div class="d-flex justify-content-center">
+                  <table class="w-75">
+                    <thead>
+                      <th class="text-center pb-3">品名</th>
+                      <th class="text-center pb-3" width="150px">
+                        數量
+                      </th>
+                      <th class="text-center pb-3" width="80px">單位</th>
+                      <th class="text-center pb-3">單價</th>
+                      <th class="text-center pb-3" width="40px">刪除</th>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in carts" :key="item.product.id + 1">
+                        <td class="align-middle text-center">
+                          {{ item.product.title }}
+                        </td>
+                        <td class="align-middle">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <button type="button" class="btn btn-outline-primary px-2 d-flex justify-content-center" :disabled="item.quantity === 1">
+                                <span class="material-icons">
+                                  remove
+                                </span>
+                              </button>
+                            </div>
+                            <input id="inlineFormInputGroupUsername" type="text" class="form-control text-center"
+                              :value="item.quantity" @keyup.enter="quantityUpdata(item.product.id, $event.target.value)">
+                            <div class="input-group-append">
+                              <button type="button" class="btn btn-outline-primary px-2 d-flex justify-content-center">
+                                <span class="material-icons">
+                                  add
+                                </span>
+                              </button>
+                            </div>
                           </div>
-                          <input id="inlineFormInputGroupUsername" type="text" class="form-control text-center"
-                            :value="item.quantity" @keyup.enter="quantityUpdata(item.product.id, $event.target.value)">
-                          <div class="input-group-append">
-                            <button class="btn btn-outline-primary" type="button"
-                              @click="quantityUpdata(item.product.id, item.quantity - 1)"
-                              :disabled="item.quantity === 1">
-                              -
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle">
-                        {{ item.product.unit }}
-                      </td>
-                      <td class="align-middle text-right">
-                        {{ item.product.price }}
-                      </td>
-                      <td class="align-middle">
-                        <button type="button" class="btn btn-outline-danger btn-sm"
-                          @click="removeCartItem(item.product.id)">
-                          <i class="far fa-trash-alt"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-
-                </table>
+                        </td>
+                        <td class="align-middle text-center">
+                          {{ item.product.unit }}
+                        </td>
+                        <td class="align-middle text-center">
+                          {{ item.product.price }}
+                        </td>
+                        <td class="align-middle text-right">
+                          <button type="button" class="btn btn-outline-danger btn-sm"
+                            @click="removeCartItem(item.product.id)">
+                            <span class="material-icons">
+                              delete_outline
+                              </span>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div>{{ cartsTotal }}</div>
+                </div>
+                
 
               </div>
               <div class="modal-footer">
