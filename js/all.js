@@ -75,9 +75,13 @@ new Vue({
           console.log(error.response)
         });
     },
-    updateCart(){
+    updateCartQuantity(id, quantity){
       const url = `${this.api.path}${this.api.uuid}/ec/shopping`;
-      axios.patch(url)
+      const cart = {
+        product: id,
+        quantity,
+      };
+      axios.patch(url, cart)
         .then(res=>{
           console.log(res)
         })
@@ -86,7 +90,6 @@ new Vue({
       
       this.carts.forEach((item) =>{
         this.cartsTotal += item.product.price * item.quantity;
-        console.log(this.cartsTotal)
       })
       
     }
