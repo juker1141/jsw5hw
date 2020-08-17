@@ -135,7 +135,8 @@
                     確認要清除所有購物車內容嗎? ( 刪除後不可復原!! )
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#delCartAllModal">取消</button>
+                    <button type="button" class="btn btn-secondary"
+                      @click="closeModalID = 'deleteReturn';closeModal()">取消</button>
                     <button type="button" class="btn btn-danger" @click="removeCartAllItem">確認刪除</button>
                   </div>
                 </div>
@@ -230,7 +231,8 @@
                       <textarea class="form-control" v-model="form.message" rows="5" id="message"></textarea>
                     </validation-provider>
                     <div class="d-flex justify-content-end mt-3">
-                      <button type="button" class="btn btn-secondary mr-2" @click="closeModalID = 'formReturn';closeModal()">返回</button>
+                      <button type="button" class="btn btn-secondary mr-2"
+                        @click="closeModalID = 'formReturn';closeModal()">返回</button>
                       <button type="submit" class="btn btn-primary" :disabled="invalid">送出表單</button>
                     </div>
 
@@ -257,7 +259,8 @@
                 <p>恭喜你已完成訂單。</p>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click="closeModalID = 'finish';closeModal()">關閉</button>
+                <button type="button" class="btn btn-secondary"
+                  @click="closeModalID = 'finish';closeModal()">關閉</button>
               </div>
             </div>
           </div>

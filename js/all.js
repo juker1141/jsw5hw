@@ -153,7 +153,7 @@ new Vue({
       const url = `${this.api.path}${this.api.uuid}/ec/orders`;
 
       axios.post(url, this.form)
-        .then( res => {
+        .then(res => {
           if (res.data.data.id) {
             // 跳出提示訊息
             $('#orderModal').modal('show');
@@ -165,18 +165,17 @@ new Vue({
           console.log(error.response.data.errors);
         });
     },
-    closeModal(){
+    closeModal() {
       switch (this.closeModalID) {
-        case 'Oranges':
-          console.log('Oranges are $0.59 a pound.');
+        case 'deleteReturn':
+          $('#delCartAllModal').modal('hide');
           break;
         case 'formReturn':
           $('#fromModal').modal('hide');
+          break;
         case 'finish':
           $('#orderModal').modal('hide');
           break;
-        default:
-          console.log();
       };
       this.closeModalID = '';
     }
