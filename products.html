@@ -180,7 +180,7 @@
                       <!-- 錯誤訊息 -->
                       <span class="invalid-feedback">{{ errors[0] }}</span>
                     </validation-provider>
-                    <validation-provider rules="required" v-slot="{ errors, classes, invalid }">
+                    <validation-provider rules="required|min:8" v-slot="{ errors, classes, invalid }">
                       <!-- 輸入框 -->
                       <label for="tel">電話</label>
                       <input id="tel" type="tel" name="電話" v-model="form.tel" class="form-control" :class="classes">
