@@ -1,4 +1,17 @@
 Vue.component('loading', VueLoading);
+Vue.component('ValidationProvider', VeeValidate.ValidationProvider);
+Vue.component('ValidationObserver', VeeValidate.ValidationObserver);
+
+import zh_TW from './zh_TW.js';
+
+VeeValidate.localize('tw', zh_TW);
+
+VeeValidate.configure({
+  classes: {
+    valid: 'is-valid',
+    invalid: 'is-invalid',
+  }
+});
 Vue.filter('toCurrency', function (num) {
   //避免有原價與特價造成的錯誤
   if (!num) return;
@@ -21,12 +34,21 @@ new Vue({
       loadingItem: '',
       loadingcart: '',
     },
+    form: {
+      name: '',
+      email: '',
+      tel: '',
+      address: '',
+      payment: '',
+      message: '',
+    },
     isLoading: false,
     tempProductTotal: '',
     api: {
       uuid: '8a8058c0-58d2-485b-b7fc-3c9be181cca7',
       path: 'https://course-ec-api.hexschool.io/api/',
     },
+    closeModalID: '',
   },
   methods: {
     getProducts(page = 1) {
@@ -126,6 +148,37 @@ new Vue({
         }).catch(() => {
           $('#delCartAllModal').modal('hide');
         })
+    },
+    createOrder() {
+      const url = `${this.api.path}${this.api.uuid}/ec/orders`;
+
+      axios.post(url, this.form)
+        .then( res => {
+          if (res.data.data.id) {
+            // 跳出提示訊息
+            $('#orderModal').modal('show');
+
+            // 重新渲染購物車
+            this.getCart();
+          }
+        }).catch(error => {
+          console.log(error.response.data.errors);
+        });
+    },
+    closeModal(){
+      switch (this.closeModalID) {
+        case 'Oranges':
+          console.log('Oranges are $0.59 a pound.');
+          break;
+        case 'formReturn':
+          $('#fromModal').modal('hide');
+        case 'finish':
+          $('#orderModal').modal('hide');
+          break;
+        default:
+          console.log();
+      };
+      this.closeModalID = '';
     }
   },
   created() {

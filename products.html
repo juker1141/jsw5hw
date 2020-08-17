@@ -41,7 +41,7 @@
           </div>
           <div class="modal-body">
             <div class="d-flex justify-content-center">
-              <table class="w-50">
+              <table class="w-75">
                 <thead>
                   <th class="text-center pb-3" width="200px">品名</th>
                   <th class="text-center pb-3" width="150px">數量</th>
@@ -135,7 +135,7 @@
                     確認要清除所有購物車內容嗎? ( 刪除後不可復原!! )
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#delCartAllModal">取消</button>
                     <button type="button" class="btn btn-danger" @click="removeCartAllItem">確認刪除</button>
                   </div>
                 </div>
@@ -146,10 +146,123 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-            <button type="button" class="btn btn-primary">結帳</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#fromModal">確認訂單</button>
           </div>
         </div>
+        <div class="modal fade" id="fromModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">填寫訂購資料</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <validation-observer v-slot="{ invalid }">
+                  <form @submit.prevent="createOrder">
+                    <validation-provider rules="required" v-slot="{ errors, classes, invalid }">
+                      <!-- 輸入框 -->
+                      <label for="name">收件人姓名</label>
+                      <input id="name" type="text" name="收件人" v-model="form.name" class="form-control mb-2"
+                        :class="classes">
+                      <!-- 錯誤訊息 -->
+                      <span class="invalid-feedback">{{ errors[0] }}</span>
+                    </validation-provider>
+                    <validation-provider rules="required|email" v-slot="{ errors, classes, invalid }">
+                      <!-- 輸入框 -->
+                      <label for="email">Email</label>
+                      <input id="email" type="email" name="Email" v-model="form.email" class="form-control"
+                        :class="classes">
+                      <!-- 錯誤訊息 -->
+                      <span class="invalid-feedback">{{ errors[0] }}</span>
+                    </validation-provider>
+                    <validation-provider rules="required" v-slot="{ errors, classes, invalid }">
+                      <!-- 輸入框 -->
+                      <label for="tel">電話</label>
+                      <input id="tel" type="tel" name="電話" v-model="form.tel" class="form-control" :class="classes">
+                      <!-- 錯誤訊息 -->
+                      <span class="invalid-feedback">{{ errors[0] }}</span>
+                    </validation-provider>
+                    <validation-provider rules="required" v-slot="{ errors, classes, invalid }">
+                      <!-- 輸入框 -->
+                      <label for="address">地址</label>
+                      <input id="address" type="text" name="地址" v-model="form.address" class="form-control"
+                        :class="classes">
+                      <!-- 錯誤訊息 -->
+                      <span class="invalid-feedback">{{ errors[0] }}</span>
+                    </validation-provider>
+                    <validation-provider rules="required" v-slot="{ errors, classes, invalid }">
+                      <!-- 輸入框 -->
+                      <label for="payment">付款方式</label>
+                      <select v-model="form.payment" class="custom-select" required>
+                        <option value="" selected disabled>請選擇付款方式</option>
+                        <option value="WebATM">
+                          WebATM
+                        </option>
+                        <option value="ATM">
+                          ATM
+                        </option>
+                        <option value="CVS">
+                          CVS
+                        </option>
+                        <option value="Barcode">
+                          Barcode
+                        </option>
+                        <option value="Credit">
+                          Credit
+                        </option>
+                        <option value="ApplePay">
+                          ApplePay
+                        </option>
+                        <option value="GooglePay">
+                          GooglePay
+                        </option>
+                      </select>
+                      <!-- 錯誤訊息 -->
+                      <span class="invalid-feedback">{{ errors[0] }}</span>
+                    </validation-provider>
+                    <validation-provider>
+                      <!-- 輸入框 -->
+                      <label for="message">留言</label>
+                      <textarea class="form-control" v-model="form.message" rows="5" id="message"></textarea>
+                    </validation-provider>
+                    <div class="d-flex justify-content-end mt-3">
+                      <button type="button" class="btn btn-secondary mr-2" @click="closeModalID = 'formReturn';closeModal()">返回</button>
+                      <button type="submit" class="btn btn-primary" :disabled="invalid">送出表單</button>
+                    </div>
+
+                  </form>
+
+                </validation-observer>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 完成訂單 Modal start -->
+        <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">完成訂單</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>恭喜你已完成訂單。</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="closeModalID = 'finish';closeModal()">關閉</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 完成訂單 Modal end -->
       </div>
     </div>
     <div class="container">
@@ -276,6 +389,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3.3.3/dist/vue-loading.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.3.0/vee-validate.full.min.js"></script>
   <script src="js/all.js" type="module"></script>
 </body>
 
